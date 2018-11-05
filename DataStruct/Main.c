@@ -1,7 +1,8 @@
 #include <vld.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "include/BTree.h"
+#include "BTree/include/BTree.h"
+#include "AVLTree/include/AVLTree.h"
 
 int main()
 {
