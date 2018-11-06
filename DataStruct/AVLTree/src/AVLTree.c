@@ -1,4 +1,15 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
 #include "..\include\AVLTree.h"
+
+struct AVL_node ** AVLTree_Init()
+{
+	struct AVL_node** root = malloc(sizeof(struct AVL_node*));
+	assert(root == NULL);
+	(*root) = NULL;
+	return root;
+}
 
 struct AVL_node * RR(struct AVL_node ** root)
 {
