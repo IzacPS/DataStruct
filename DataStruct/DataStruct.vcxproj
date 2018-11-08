@@ -119,11 +119,14 @@
   <ItemGroup>
     <ClInclude Include="AVLTree\include\AVLTree.h" />
     <ClInclude Include="BTree\include\BTree.h" />
+    <ClInclude Include="Core\DSDefs.h" />
+    <ClInclude Include="RBTree\include\LLRBTree.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AVLTree\src\AVLTree.c" />
     <ClCompile Include="Main.c" />
     <ClCompile Include="BTree\src\BTree.c" />
+    <ClCompile Include="RBTree\src\LLRBTree.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

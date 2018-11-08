@@ -61,9 +61,9 @@ void BTree_PrintOrdem(struct node ** root)
 
 	if (*root)
 	{
-		BTree_Print(&((*root)->left));
+		BTree_PrintOrdem(&((*root)->left));
 		printf("%d\n", (*root)->key);
-		BTree_Print(&((*root)->right));
+		BTree_PrintOrdem(&((*root)->right));
 	}
 }
 
@@ -74,8 +74,8 @@ void BTree_PrintPreOrdem(struct node ** root)
 	if (*root)
 	{
 		printf("%d\n", (*root)->key);
-		BTree_Print(&((*root)->left));
-		BTree_Print(&((*root)->right));
+		BTree_PrintPreOrdem(&((*root)->left));
+		BTree_PrintPreOrdem(&((*root)->right));
 	}
 }
 
@@ -86,8 +86,8 @@ void BTree_PrintPosOrdem(struct node ** root)
 
 	if (*root)
 	{
-		BTree_Print(&((*root)->left));
-		BTree_Print(&((*root)->right));
+		BTree_PrintPosOrdem(&((*root)->left));
+		BTree_PrintPosOrdem(&((*root)->right));
 		printf("%d\n", (*root)->key);
 	}
 }

@@ -39,7 +39,4 @@ struct AVL_node * RL(struct AVL_node ** root)
 	return LL(&(*root));
 }
 
-int AVL_Height(struct AVL_node** root)
-{
-	
-}
+
