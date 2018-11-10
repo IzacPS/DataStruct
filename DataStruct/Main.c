@@ -14,8 +14,8 @@ int main()
 
 //int i, N = 7, val[7] ={10,15,20,30,70,85,50};
 //int i, N = 7, val[7] ={85,10,30,70,15,20,50};
-	int i, N = 10, val[10] = {0,1,2,3,4,5,6,7,8,9};
-	//int i, N = 10, val[10] ={10,15,10,20,30,70,70,85,50,50};
+	//int i, N = 4, val[4] = {20,30,5,10};
+	int i, N = 10, val[10] ={0,1,2,3,4,5,6,7,8,9};
 
 	for (i = 0; i < N; i++) {
 		/*
@@ -30,7 +30,7 @@ int main()
 		//printf("\n\n==========================\n\n");
 	}
 
-	LLRB_Print(root, POS_ORDEM);
+	LLRB_Print(root, PREORDER);
 	
 
 	LLRB_DestroyTree(root);

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "..\include\LLRBTree.h"
+#include "../../RBTree/include/LLRBTree.h"
 
 
 struct LLRB_node** LLRB_Init()
@@ -33,7 +33,7 @@ static struct LLRB_node* LLRB_SearchNode(struct LLRB_node* root, TYPE key)
 	}
 	else
 	{
-		const unsigned char direction = (root->key > key);
+		const unsigned char direction = (key > root->key);
 
 		return LLRB_SearchNode(root->child[direction], key);
 	}
@@ -42,28 +42,36 @@ static struct LLRB_node* LLRB_SearchNode(struct LLRB_node* root, TYPE key)
 void LLRB_Add(struct LLRB_node** root, TYPE key)
 {
 	assert(root != NULL);
+	*root = LLRB_AddNode(*root, key);
 
-	if (!(*root))
-	{
-		(*root) = LLRB_NewNode(key);
-	}
-	else if((*root)->key != key)
-	{
-		const unsigned char direction = ((*root)->key < key);
-		LLRB_Add(&(*root)->child[direction], key);
-	}
-
-	if (IsRed(NodeColor((*root)->child[right])) && !IsRed(NodeColor((*root)->child[left])))
-		(*root) = LLRB_LL(*root);
-
-	if (IsRed(NodeColor((*root)->child[left])) && IsRed(NodeColor((*root)->child[left]->child[left])))
-		(*root) = LLRB_RR(*root);
-
-	if (IsRed(NodeColor((*root)->child[left])) && IsRed(NodeColor((*root)->child[right])))
-		LLRB_ChangeColor(*root);
-
-	if ((*root))
+	if (*root)
 		(*root)->Color = BLACK;
+}
+
+static struct LLRB_node* LLRB_AddNode(struct LLRB_node* root, TYPE key)
+{
+
+	if (!root)
+	{
+		return LLRB_NewNode(key);
+	}
+	else if(root->key != key)
+	{
+		const unsigned char direction = (key > root->key);
+		
+		root->child[direction] = LLRB_AddNode(root->child[direction], key);
+	}
+
+	if (IsRed(NodeColor(root->child[right])) && !IsRed(NodeColor(root->child[left])))
+		root = LLRB_LL(root);
+
+	if (IsRed(NodeColor(root->child[left])) && IsRed(NodeColor(root->child[left]->child[left])))
+		root = LLRB_RR(root);
+
+	if (IsRed(NodeColor(root->child[left])) && IsRed(NodeColor(root->child[right])))
+		LLRB_ChangeColor(root);
+
+	return root;
 }
 
 void LLRB_Remove(struct LLRB_node** root, TYPE key)
@@ -248,14 +256,14 @@ void LLRB_Print(struct LLRB_node** root, enum Path path)
 	{
 		switch (path)
 		{
-		case PRE_ORDEM:
-			LLRB_PrintPreOrdem(&(*root));
+		case PREORDER:
+			LLRB_PrintPreOrdem(&(*root), 0);
 			break;
-		case ORDEM:
-			LLRB_PrintOrdem(&(*root));
+		case INORDER:
+			LLRB_PrintOrdem(&(*root), 0);
 			break;
-		case POS_ORDEM:
-			LLRB_PrintPosOrdem(&(*root));
+		case POSTORDER:
+			LLRB_PrintPosOrdem(&(*root), 0);
 			break;
 		default:
 			break;
@@ -263,33 +271,67 @@ void LLRB_Print(struct LLRB_node** root, enum Path path)
 	}
 }
 
-static void LLRB_PrintPreOrdem(struct LLRB_node** root)
+static void LLRB_PrintPreOrdem(struct LLRB_node** root, int h)
 {
 	if ((*root))
 	{
-		printf("%d ", (*root)->key);
-		LLRB_PrintPreOrdem(&(*root)->child[left]);
-		LLRB_PrintPreOrdem(&(*root)->child[right]);
+		printf("[%d %s h:%d] ", (*root)->key, ((*root)->Color) ? "black" : "red", h);
+		LLRB_PrintPreOrdem(&(*root)->child[left], h+1);
+		LLRB_PrintPreOrdem(&(*root)->child[right], h+1);
 	}
 }
 
-static void LLRB_PrintOrdem(struct LLRB_node** root)
+static void LLRB_PrintOrdem(struct LLRB_node** root, int h)
 {
 	if ((*root))
 	{
-		LLRB_PrintOrdem(&(*root)->child[left]);
-		printf("%d ", (*root)->key);
-		LLRB_PrintOrdem(&(*root)->child[right]);
+		LLRB_PrintOrdem(&(*root)->child[left], h+1);
+		printf("[%d %s h:%d] ", (*root)->key, ((*root)->Color) ? "black" : "red", h);
+		LLRB_PrintOrdem(&(*root)->child[right], h+1);
 	}
 }
 
-static void LLRB_PrintPosOrdem(struct LLRB_node** root)
+static void LLRB_PrintPosOrdem(struct LLRB_node** root, int h)
 {
 	if ((*root))
 	{
-		LLRB_PrintPosOrdem(&(*root)->child[left]);
-		LLRB_PrintPosOrdem(&(*root)->child[right]);
-		printf("%d ", (*root)->key);
+		LLRB_PrintPosOrdem(&(*root)->child[left], h+1);
+		LLRB_PrintPosOrdem(&(*root)->child[right] , h+1);
+		printf("[%d %s h:%d] ", (*root)->key, ((*root)->Color) ? "black" : "red", h);
 	}
 }
 
+int LLRB_NumNodes(struct LLRB_node ** root)
+{
+	if (!(*root))
+		return 0;
+
+	int LeftHeight = LLRB_NumNodes(&(*root)->child[left]);
+	int RightHeight = LLRB_NumNodes(&(*root)->child[right]);
+
+	return LeftHeight + RightHeight + 1;
+}
+
+int LLRB_Height(struct LLRB_node ** root)
+{
+	if (!(*root))
+		return 1;
+
+	int LeftHeight = LLRB_Height(&(*root)->child[left]);
+	int RightHeight = LLRB_Height(&(*root)->child[right]);
+
+	int Adicional = ((*root)->Color == BLACK) ? 1 : 0;
+
+	return (LeftHeight > RightHeight) ? LeftHeight + Adicional : RightHeight + Adicional;
+}
+
+int LLRB_NumOfNonLeafNodes(struct LLRB_node ** root)
+{
+	if (!(*root)->child[left] && !(*root)->child[right])
+		return 0;
+
+	int LeftHeight = LLRB_NumNodes(&(*root)->child[left]);
+	int RightHeight = LLRB_NumNodes(&(*root)->child[right]);
+
+	return LeftHeight + RightHeight + 1;
+}

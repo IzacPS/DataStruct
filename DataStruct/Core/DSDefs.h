@@ -5,12 +5,21 @@
 
 #define IsRed(x) (x == _RED)
 #define NodeColor(x) ((x == NULL) ? _BLACK : x->Color)
+#define MAX(x, y) (x > y) ? x : y
+#define NodeHeight(x) (x == NULL) ? -1 : x->height
 
 enum Path
 {
-	PRE_ORDEM,
-	ORDEM,
-	POS_ORDEM
+	PREORDER,
+	INORDER,
+	POSTORDER
 };
+
+enum Direction
+{
+	left,
+	right
+};
+
 
 #endif
