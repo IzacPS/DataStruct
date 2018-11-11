@@ -20,7 +20,7 @@ int BTree_Add(struct node ** root, int key)
 	struct node* node = Btree_NewNode(key);
 
 	if (!(*root))
-		root = node;
+		*root = node;
 	else 
 	{
 		struct node* current = *root;
@@ -96,6 +96,41 @@ int BTree_Remove(struct node** root, int key)
 	return 0;
 }
 
+/*
+void BTree_Remove(struct node ** root, int key)
+{
+	if (!root) return;
+
+	if (!(root)) return;
+
+	if ((*root)->key == key)
+	{
+		struct node* n = (*root);
+		(*root) = BTree_SmallKey(&(n->child[right]));
+		(*root)->child[right] = n->child[right];
+		free(n);
+	}
+	else
+	{
+		const unsigned char direction = ((*root)->key < key);
+		BTree_Remove(&(*root)->child[direction], key);
+	}
+}*/
+
+void BTree_RemoveEvenKey(struct node** root)
+{
+	if (!root)
+		return;
+	if (!*root)
+		return;
+
+	BTree_RemoveEvenKey(&(*root)->child[left]);
+	BTree_RemoveEvenKey(&(*root)->child[right]);
+
+	if ((*root)->key % 2 == 0)
+		(*root) = BTree_RemoveCurrent((*root));
+}
+
 int BTree_IsEmpty(struct node** root)
 {
 	return (!root || !(*root));
@@ -151,26 +186,6 @@ void BTree_PrintPosOrdem(struct node ** root)
 	}
 }
 
-void BTree_Remove(struct node ** root, int key)
-{
-	if (!root) return;
-
-	if (!(root)) return;
-
-	if ((*root)->key == key)
-	{
-		struct node* n = (*root);
-		(*root) = BTree_SmallKey(&(n->child[right]));
-		(*root)->child[right] = n->child[right];
-		free(n);
-	}
-	else
-	{
-		const unsigned char direction = ((*root)->key < key);
-		BTree_Remove(&(*root)->child[direction], key);
-	}
-}
-
 struct node * BTree_SmallKey(struct node ** root)
 {
 	if (!root) return NULL;
@@ -214,6 +229,80 @@ static void BTree_FreeNode(struct node ** root)
 		*root = NULL;
 	}
 }
+
+static struct node* BTree_SearchOddKey(struct node** root)
+{
+	if (!*root)
+		return NULL;
+	if ((*root)->key % 2 != 0)
+		return (*root);
+
+	struct node* LeftNode = BTree_SearchOddKey(&(*root)->child[left]);
+	struct node* RightNode = BTree_SearchEvenKey(&(*root)->child[right]);
+
+	if (LeftNode && RightNode)
+		return LeftNode;
+	if (LeftNode && !RightNode)
+		return LeftNode;
+	if (!LeftNode && RightNode)
+		return RightNode;
+	if (!LeftNode && !RightNode)
+		return NULL;
+}
+
+static struct node* BTree_SearchEvenKey(struct node** root)
+{
+	if (!*root)
+		return NULL;
+	if ((*root)->key % 2 == 0)
+		return (*root);
+
+	struct node* LeftNode = BTree_SearchOddKey(&(*root)->child[left]);
+	struct node* RightNode = BTree_SearchEvenKey(&(*root)->child[right]);
+
+	if (LeftNode && RightNode)
+		return LeftNode;
+	if (LeftNode && !RightNode)
+		return LeftNode;
+	if (!LeftNode && RightNode)
+		return RightNode;
+	if (!LeftNode && !RightNode)
+		return NULL;
+}
+
+static struct node* BTree_SearchMaxKey(struct node** root)
+{
+	if (!*root)
+		return NULL;
+
+	struct node* LeftNode = BTree_SearchOddKey(&(*root)->child[left]);
+	struct node* RightNode = BTree_SearchEvenKey(&(*root)->child[right]);
+	
+	if (!LeftNode && RightNode)
+		return RightNode;
+	if (LeftNode && !RightNode)
+		return LeftNode;
+	if (!LeftNode && !RightNode)
+		return NULL;
+	return (LeftNode->key > RightNode->key) ? LeftNode : RightNode;
+}
+
+
+/*
+void BTree_SearchKey(struct node** root, enum Parity parity)
+{
+	assert(root != NULL);
+
+	switch (parity)
+	{
+		case Even:
+			break;
+		case Odd:
+			break;
+		default :
+			break;
+	}
+}*/
 
 
 

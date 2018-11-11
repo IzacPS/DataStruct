@@ -125,6 +125,58 @@ int AVLTree_Remove(struct AVL_node** root, KEY key)
 	return res;
 }
 
+void AVLTree_RemoveOddNode(struct AVL_node** root)
+{
+	if (!root || !(*root))
+		return;
+
+	AVLTree_RemoveOddNode(&(*root)->child[left]);
+	AVLTree_RemoveOddNode(&(*root)->child[right]);
+
+	if((*root)->key % 2 == 0){
+		if (!(*root)->child[left] || !(*root)->child[right])
+		{
+			struct AVL_node* oldNode = (*root);
+			*root = (!(*root)->child[left]) ? (*root)->child[left] : (*root)->child[right];
+			free(oldNode);
+		}
+		else
+		{
+			struct AVL_node* n = AVLTree_SearchMinNode((*root)->child[right]);
+			(*root)->key = n->key;
+			AVLTree_Remove(&(*root)->child[right], (*root)->key);
+			if (AVLTree_BalanceFactor(*root) >= 2)
+			{
+				if (NodeHeight((*root)->child[left]->child[right]) <= NodeHeight((*root)->child[left]->child[left]))
+					LL(root);
+				else
+					LR(root);
+			}
+		}
+		if (*root)
+			(*root)->height = MAX(NodeHeight((*root)->child[left]), NodeHeight((*root)->child[right])) + 1;
+	}
+	(*root)->height = MAX(NodeHeight((*root)->child[left]), NodeHeight((*root)->child[right])) + 1;
+}
+
+unsigned char AVLTree_IsSearchTree(struct AVL_node** root)
+{
+	assert(root != NULL);
+
+	if (!*root)
+		return 0;
+	
+	const unsigned char i = AVLTree_IsSearchTree(&(*root)->child[left]) & AVLTree_IsSearchTree(&(*root)->child[right]);
+	
+	if (!(*root)->child[left] && !(*root)->child[right])
+		return 0;
+
+	if ((*root)->child[left]->key > (*root)->key || (*root)->child[right]->key < (*root)->key)
+		return 0;
+	else
+		return 1 & i;	
+}
+
 void RR(struct AVL_node** root)
 {
 	struct AVL_node* n = (*root)->child[right];
@@ -225,4 +277,17 @@ int AVLTree_NumNodes(struct AVL_node** root)
 	int RightHeight = AVLTree_Height(&(*root)->child[right]);
 
 	return LeftHeight + RightHeight + 1;
+}
+
+struct AVL_node* AVLTree_MaxKey(struct AVL_node** root)
+{
+	if (!*root)
+		return NULL;
+
+	struct AVL_node* LeftNode = AVLTree_MaxKey(&(*root)->child[left]);
+	struct AVL_node* RightNode = AVLTree_MaxKey(&(*root)->child[right]);
+
+	if (LeftNode->key == RightNode->key)
+		return LeftNode;
+	return (LeftNode->key > RightNode->key) ? LeftNode : RightNode;
 }

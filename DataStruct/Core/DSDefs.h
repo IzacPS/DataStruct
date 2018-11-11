@@ -21,5 +21,10 @@ enum Direction
 	right
 };
 
+enum Parity
+{
+	Even,
+	Odd
+};
 
 #endif

@@ -5,12 +5,6 @@
 #define KEY int
 #endif
 
-enum RotationDirection
-{
-	LEFT = -1,
-	BALANCED = 0,
-	RIGHT = 1
-};
 
 struct AVL_node
 {
