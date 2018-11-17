@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "../../RBTree/include/LLRBTree.h"
+#include "../include/LLRBTree.h"
 
 
 struct LLRB_node** LLRB_Init()
@@ -39,10 +39,21 @@ static struct LLRB_node* LLRB_SearchNode(struct LLRB_node* root, TYPE key)
 	}
 }
 
-void LLRB_Add(struct LLRB_node** root, TYPE key)
+void LLRB_Add(struct LLRB_node** root, TYPE key, enum Orientation orientation)
 {
 	assert(root != NULL);
-	*root = LLRB_AddNode(*root, key);
+
+	switch(orientation)
+	{
+	case NORMAL:
+		*root = LLRB_AddNode(*root, key);
+		break;
+	case REVERSE:
+		*root = LLRB_AddNodeReverse(*root, key);
+		break;
+	default:
+		break;
+	}
 
 	if (*root)
 		(*root)->Color = BLACK;
@@ -59,6 +70,32 @@ static struct LLRB_node* LLRB_AddNode(struct LLRB_node* root, TYPE key)
 	{
 		const unsigned char direction = (key > root->key);
 		
+		root->child[direction] = LLRB_AddNode(root->child[direction], key);
+	}
+
+	if (IsRed(NodeColor(root->child[right])) && !IsRed(NodeColor(root->child[left])))
+		root = LLRB_LL(root);
+
+	if (IsRed(NodeColor(root->child[left])) && IsRed(NodeColor(root->child[left]->child[left])))
+		root = LLRB_RR(root);
+
+	if (IsRed(NodeColor(root->child[left])) && IsRed(NodeColor(root->child[right])))
+		LLRB_ChangeColor(root);
+
+	return root;
+}
+
+static struct LLRB_node* LLRB_AddNodeReverse(struct LLRB_node* root, TYPE key)
+{
+
+	if (!root)
+	{
+		return LLRB_NewNode(key);
+	}
+	else if (root->key != key)
+	{
+		const unsigned char direction = (key < root->key);
+
 		root->child[direction] = LLRB_AddNode(root->child[direction], key);
 	}
 
@@ -335,3 +372,78 @@ int LLRB_NumOfNonLeafNodes(struct LLRB_node ** root)
 
 	return LeftHeight + RightHeight + 1;
 }
+
+void LLRB_MirrorTree(struct LLRB_node** NormalTreeRoot, struct LLRB_node** TreeReverseRoot)
+{
+	if (NormalTreeRoot)
+	{
+		LLRB_MirrorTree(&(*NormalTreeRoot)->child[left], TreeReverseRoot);
+		LLRB_Add(TreeReverseRoot, (*NormalTreeRoot)->key, REVERSE);
+		LLRB_MirrorTree(&(*NormalTreeRoot)->child[right], TreeReverseRoot);
+	}
+}
+
+unsigned char LLRB_areSimilarTrees(struct LLRB_node** root1, struct LLRB_node** root2)
+{
+	assert(root1 || root2);
+
+	if (!*root1 && !*root2)
+		return 1;
+	else
+		return LLRB_areSimilarTreesRecursion(root1, root2);
+}
+
+static unsigned char LLRB_areSimilarTreesRecursion(struct LLRB_node** root1, struct LLRB_node** root2)
+{
+	unsigned char leftResult = 1, rightResult = 1, result = 1;
+
+	if (*root1 && *root2)
+	{
+		leftResult = LLRB_areSimilarTreesRecursion(&(*root1)->child[left], &(*root2)->child[left]);
+		rightResult = LLRB_areSimilarTreesRecursion(&(*root1)->child[right], &(*root2)->child[right]);
+		
+		if ((*root1)->child[left] && (*root2)->child[left] && (*root1)->child[right] && (*root2)->child[right])
+			result = 1 && leftResult && rightResult;
+		else if (!(*root1)->child[left] && !(*root2)->child[left] && (*root1)->child[right] && (*root2)->child[right])
+			result = 1 && leftResult && rightResult;
+		else if ((*root1)->child[left] && (*root2)->child[left] && !(*root1)->child[right] && !(*root2)->child[right])
+			result = 1 && leftResult && rightResult;
+		else if (!(*root1)->child[left] && !(*root2)->child[left] && !(*root1)->child[right] && !(*root2)->child[right])
+			result = 1 && leftResult && rightResult;
+		else
+			result = 0 && leftResult && rightResult;
+
+		printf("result:%d, leftResult:%d, rightResult%d, key%d\n", result, leftResult, rightResult, (*root1)->key);
+	}
+	return result;
+}
+
+unsigned char LLRB_areEqualTrees(struct LLRB_node** root1, struct LLRB_node** root2)
+{
+	assert(root1 || root2);
+
+	if (!*root1 && !*root2)
+		return 1;
+	else
+		return LLRB_areEqualTreesRecursion(root1, root2);
+}
+
+static unsigned char LLRB_areEqualTreesRecursion(struct LLRB_node** root1, struct LLRB_node** root2)
+{
+	unsigned char leftResult = 1, rightResult = 1, result = 1;
+
+	if (*root1 && *root2)
+	{
+		leftResult = LLRB_areEqualTreesRecursion(&(*root1)->child[left], &(*root2)->child[left]);
+		rightResult = LLRB_areEqualTreesRecursion(&(*root1)->child[right], &(*root2)->child[right]);
+
+		if ((*root1)->key == (*root2)->key)
+			result = 1 && leftResult && rightResult;
+		else
+			result = 0 && leftResult && rightResult;
+
+		printf("result:%d, leftResult:%d, rightResult%d, key%d\n", result, leftResult, rightResult, (*root1)->key);
+	}
+	return result;
+}
+

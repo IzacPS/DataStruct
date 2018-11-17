@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-#include "../../Core/DSDefs.h"
+#include "../../../Core/DSDefs.h"
 #include "../include/BTree.h"
 
 struct node** BTree_Init()

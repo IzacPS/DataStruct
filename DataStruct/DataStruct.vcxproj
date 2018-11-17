@@ -117,16 +117,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AVLTree\include\AVLTree.h" />
-    <ClInclude Include="BTree\include\BTree.h" />
+    <ClInclude Include="Trees\AVLTree\include\AVLTree.h" />
+    <ClInclude Include="Trees\BTree\include\BTree.h" />
     <ClInclude Include="Core\DSDefs.h" />
-    <ClInclude Include="RBTree\include\LLRBTree.h" />
+    <ClInclude Include="Trees\RBTree\include\LLRBTree.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AVLTree\src\AVLTree.c" />
+    <ClCompile Include="Trees\AVLTree\src\AVLTree.c" />
     <ClCompile Include="Main.c" />
-    <ClCompile Include="BTree\src\BTree.c" />
-    <ClCompile Include="RBTree\src\LLRBTree.c" />
+    <ClCompile Include="Trees\BTree\src\BTree.c" />
+    <ClCompile Include="Trees\RBTree\src\LLRBTree.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

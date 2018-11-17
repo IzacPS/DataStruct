@@ -15,30 +15,30 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BTree\include\BTree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AVLTree\include\AVLTree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RBTree\include\LLRBTree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Core\DSDefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Trees\RBTree\include\LLRBTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Trees\BTree\include\BTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Trees\AVLTree\include\AVLTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BTree\src\BTree.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AVLTree\src\AVLTree.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RBTree\src\LLRBTree.c">
+    <ClCompile Include="Trees\RBTree\src\LLRBTree.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Trees\BTree\src\BTree.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Trees\AVLTree\src\AVLTree.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
