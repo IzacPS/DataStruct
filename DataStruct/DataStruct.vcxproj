@@ -117,12 +117,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Queue\include\Queue.h" />
+    <ClInclude Include="Stack\include\Stack.h" />
     <ClInclude Include="Trees\AVLTree\include\AVLTree.h" />
     <ClInclude Include="Trees\BTree\include\BTree.h" />
     <ClInclude Include="Core\DSDefs.h" />
     <ClInclude Include="Trees\RBTree\include\LLRBTree.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Queue\src\Queue.c" />
+    <ClCompile Include="Stack\src\Stack.c" />
     <ClCompile Include="Trees\AVLTree\src\AVLTree.c" />
     <ClCompile Include="Main.c" />
     <ClCompile Include="Trees\BTree\src\BTree.c" />

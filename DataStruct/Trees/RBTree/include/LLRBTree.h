@@ -44,9 +44,12 @@ static struct LLRB_node* LLRB_MinValueAtRightSubTree(struct LLRB_node* root);
 static void LLRB_FreeNode(struct LLRB_node* root);
 void LLRB_DestroyTree(struct LLRB_node** root);
 static struct LLRB_node* LLRB_RemoveMinValue(struct LLRB_node* root);
-void LLRB_Print(struct LLRB_node** root, enum Path path);
+void LLRB_Print(struct LLRB_node** root, enum Path path, enum Traversal traversal);
+static void LLRB_RecursivePrintPreOrdem(struct LLRB_node** root, int h);
 static void LLRB_PrintPreOrdem(struct LLRB_node** root, int h);
+static void LLRB_RecursivePrintOrdem(struct LLRB_node** root, int h);
 static void LLRB_PrintOrdem(struct LLRB_node** root, int h);
+static void LLRB_RecursivePrintPosOrdem(struct LLRB_node** root, int h);
 static void LLRB_PrintPosOrdem(struct LLRB_node** root, int h);
 int LLRB_NumNodes(struct LLRB_node** root);
 int LLRB_Height(struct LLRB_node** root);
@@ -54,5 +57,7 @@ unsigned char LLRB_areSimilarTrees(struct LLRB_node ** root1, struct LLRB_node *
 static unsigned char LLRB_areSimilarTreesRecursion(struct LLRB_node ** root1, struct LLRB_node ** root2);
 unsigned char LLRB_areEqualTrees(struct LLRB_node ** root1, struct LLRB_node ** root2);
 static unsigned char LLRB_areEqualTreesRecursion(struct LLRB_node ** root1, struct LLRB_node ** root2);
+TYPE LLRB_MinValueInterative(struct LLRB_node ** root);
+
 
 #endif

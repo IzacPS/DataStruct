@@ -15,6 +15,12 @@ enum Path
 	POSTORDER
 };
 
+enum Traversal
+{
+	ITERATIVE,
+	RECURSIVE
+};
+
 enum Direction
 {
 	left,

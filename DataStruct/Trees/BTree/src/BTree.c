@@ -3,6 +3,8 @@
 #include <assert.h>
 #include "../../../Core/DSDefs.h"
 #include "../include/BTree.h"
+#define STK_TYPE struct node*
+#include "../../../Stack/include/Stack.h"
 
 struct node** BTree_Init()
 {
@@ -305,4 +307,28 @@ void BTree_SearchKey(struct node** root, enum Parity parity)
 }*/
 
 
+int BTree_MinValueInterative(struct node** root)
+{
+	struct stk stk;
+	stk_Init(&stk);
 
+	stk_push(&stk, (*root));
+	struct node* an;
+	int MinValue = INT_MAX;
+
+	while (!stk_isEmpty(&stk))
+	{
+		an = stk_pop(&stk);
+
+		if (an->key < MinValue)
+			MinValue = an->key;
+
+		if (an->child[right])
+			stk_push(&stk, an->child[right]);
+		if (an->child[left])
+			stk_push(&stk, an->child[left]);
+	}
+	stk_destroy(&stk);
+
+	return MinValue;
+}

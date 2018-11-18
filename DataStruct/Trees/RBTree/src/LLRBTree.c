@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "../include/LLRBTree.h"
-
+#define STK_TYPE struct LLRB_node*
+#include "../../../Stack/include/Stack.h"
 
 struct LLRB_node** LLRB_Init()
 {
@@ -287,20 +288,43 @@ static struct LLRB_node* LLRB_RemoveMinValue(struct LLRB_node* root)
 	return LLRB_ToBalance(root);
 }
 
-void LLRB_Print(struct LLRB_node** root, enum Path path)
+void LLRB_Print(struct LLRB_node** root, enum Path path, enum Traversal traversal)
 {
 	if ((*root))
 	{
-		switch (path)
+		switch (traversal)
 		{
-		case PREORDER:
-			LLRB_PrintPreOrdem(&(*root), 0);
+		case ITERATIVE:
+			switch (path)
+			{
+			case PREORDER:
+				LLRB_PrintPreOrdem(&(*root), 0);
+				break;
+			case INORDER:
+				LLRB_PrintOrdem(&(*root), 0);
+				break;
+			case POSTORDER:
+				LLRB_PrintPosOrdem(&(*root), 0);
+				break;
+			default:
+				break;
+			}
 			break;
-		case INORDER:
-			LLRB_PrintOrdem(&(*root), 0);
-			break;
-		case POSTORDER:
-			LLRB_PrintPosOrdem(&(*root), 0);
+		case RECURSIVE:
+			switch (path)
+			{
+			case PREORDER:
+				LLRB_RecursivePrintPreOrdem(&(*root), 0);
+				break;
+			case INORDER:
+				LLRB_RecursivePrintOrdem(&(*root), 0);
+				break;
+			case POSTORDER:
+				LLRB_RecursivePrintPosOrdem(&(*root), 0);
+				break;
+			default:
+				break;
+			}
 			break;
 		default:
 			break;
@@ -308,7 +332,7 @@ void LLRB_Print(struct LLRB_node** root, enum Path path)
 	}
 }
 
-static void LLRB_PrintPreOrdem(struct LLRB_node** root, int h)
+static void LLRB_RecursivePrintPreOrdem(struct LLRB_node** root, int h)
 {
 	if ((*root))
 	{
@@ -318,7 +342,7 @@ static void LLRB_PrintPreOrdem(struct LLRB_node** root, int h)
 	}
 }
 
-static void LLRB_PrintOrdem(struct LLRB_node** root, int h)
+static void LLRB_RecursivePrintOrdem(struct LLRB_node** root, int h)
 {
 	if ((*root))
 	{
@@ -328,7 +352,7 @@ static void LLRB_PrintOrdem(struct LLRB_node** root, int h)
 	}
 }
 
-static void LLRB_PrintPosOrdem(struct LLRB_node** root, int h)
+static void LLRB_RecursivePrintPosOrdem(struct LLRB_node** root, int h)
 {
 	if ((*root))
 	{
@@ -336,6 +360,89 @@ static void LLRB_PrintPosOrdem(struct LLRB_node** root, int h)
 		LLRB_PrintPosOrdem(&(*root)->child[right] , h+1);
 		printf("[%d %s h:%d] ", (*root)->key, ((*root)->Color) ? "black" : "red", h);
 	}
+}
+
+static void LLRB_PrintPreOrdem(struct LLRB_node** root, int h)
+{
+	struct stk stk;
+	stk_Init(&stk);
+
+	stk_push(&stk, (*root));
+	struct LLRB_node* an;
+
+	while (!stk_isEmpty(&stk))
+	{
+		an = stk_pop(&stk);
+		printf("[%d %s h:%d] ", an->key, (an->Color) ? "black" : "red", h);
+
+		if (an->child[right])
+			stk_push(&stk, an->child[right]);
+		if (an->child[left])
+			stk_push(&stk, an->child[left]);
+	}
+	stk_destroy(&stk);
+}
+
+static void LLRB_PrintOrdem(struct LLRB_node** root, int h)
+{
+	struct stk stk;
+	stk_Init(&stk);
+
+	struct LLRB_node* current = (*root);
+	int done = 0;
+
+	while (1)
+	{
+		if (current)
+		{
+			stk_push(&stk, current);
+			current = current->child[left];
+		}
+		else
+		{
+			if (!stk_isEmpty(&stk))
+			{
+				current = stk_pop(&stk);
+				printf("[%d %s h:%d] ", current->key, (current->Color) ? "black" : "red", h);
+				current = current->child[right];
+			}
+			else
+				break;
+		}
+	}
+	stk_destroy(&stk);
+}
+
+static void LLRB_PrintPosOrdem(struct LLRB_node** root, int h)
+{
+	struct stk stk;
+	stk_Init(&stk);
+
+	struct LLRB_node* rt = (*root);
+
+	do
+	{
+		while(rt) {
+			if(rt->child[right])
+				stk_push(&stk, rt->child[right]);
+			
+			stk_push(&stk, rt);
+			rt = rt->child[left];
+		}
+		rt = stk_pop(&stk);
+
+		if (rt->child[right] && rt->child[right] == stk_top(&stk)) {
+			stk_pop(&stk);
+			stk_push(&stk, rt);
+			rt = rt->child[right];
+		}
+		else {
+			printf("[%d %s h:%d] ", rt->key, (rt->Color) ? "black" : "red", h);
+			rt = NULL;
+		}
+	} while (!stk_isEmpty(&stk));
+
+	stk_destroy(&stk);
 }
 
 int LLRB_NumNodes(struct LLRB_node ** root)
@@ -445,5 +552,137 @@ static unsigned char LLRB_areEqualTreesRecursion(struct LLRB_node** root1, struc
 		printf("result:%d, leftResult:%d, rightResult%d, key%d\n", result, leftResult, rightResult, (*root1)->key);
 	}
 	return result;
+}
+
+TYPE LLRB_MinValueInterative(struct LLRB_node** root, int index)
+{
+	struct stk stk;
+	stk_Init(&stk);
+
+	TYPE MinValue = INT_MAX;
+
+	stk_push(&stk, (*root));
+	struct LLRB_node* an;
+
+	int count = 0;
+
+	while (!stk_isEmpty(&stk))
+	{
+		an = stk_pop(&stk);
+
+		if (count == index)
+			return an->key;
+		count++;
+
+		if (an->child[right])
+			stk_push(&stk, an->child[right]);
+		if (an->child[left])
+			stk_push(&stk, an->child[left]);
+	}
+	stk_destroy(&stk);
+
+	return MinValue;
+}
+
+TYPE LLRB_SmallerOrEqual(struct LLRB_node** root, TYPE value)
+{
+	struct stk stk;
+	stk_Init(&stk);
+
+	TYPE MinValue = INT_MAX;
+
+	stk_push(&stk, (*root));
+	struct LLRB_node* an;
+
+	while (!stk_isEmpty(&stk))
+	{
+		an = stk_pop(&stk);
+
+		if (an->key <= value)
+			MinValue = an->key;
+		else
+			return MinValue;
+
+		if (an->child[right])
+			stk_push(&stk, an->child[right]);
+		if (an->child[left])
+			stk_push(&stk, an->child[left]);
+	}
+	stk_destroy(&stk);
+
+	return MinValue;
+}
+
+int LLRB_MinValueInterative(struct LLRB_node** root, TYPE value)
+{
+	struct stk stk;
+	stk_Init(&stk);
+
+	stk_push(&stk, (*root));
+	struct LLRB_node* an;
+
+	while (!stk_isEmpty(&stk))
+	{
+		an = stk_pop(&stk);
+
+		if (an->key == value)
+			return 1;
+
+		if (an->child[right])
+			stk_push(&stk, an->child[right]);
+		if (an->child[left])
+			stk_push(&stk, an->child[left]);
+	}
+	stk_destroy(&stk);
+
+	return 0;
+}
+
+int LLRB_MinValueInterative(struct LLRB_node** root)
+{
+	struct stk stk;
+	stk_Init(&stk);
+
+	stk_push(&stk, (*root));
+	struct LLRB_node* an;
+
+	while (!stk_isEmpty(&stk))
+	{
+		an = stk_pop(&stk);
+
+		if (an->key < 0)
+			return 1;
+
+		if (an->child[right])
+			stk_push(&stk, an->child[right]);
+		if (an->child[left])
+			stk_push(&stk, an->child[left]);
+	}
+	stk_destroy(&stk);
+
+	return 0;
+}
+
+unsigned char LLRB_IsSearchTree(struct LLRB_node** root)
+{
+	assert(root != NULL);
+
+	if (!*root)
+		return 0;
+
+	const unsigned char i = LLRB_IsSearchTree(&(*root)->child[left]) && LLRB_IsSearchTree(&(*root)->child[right]);
+
+	if (!(*root)->child[left] && !(*root)->child[right])
+		return 0;
+
+	if ((*root)->child[left]->key > (*root)->key || (*root)->child[right]->key < (*root)->key)
+		return 0;
+	else
+		return 1 && i;
+}
+
+int LLRB_HeightInterative(struct LLRB_node ** root)
+{
+
 }
 

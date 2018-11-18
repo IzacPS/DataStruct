@@ -23,4 +23,6 @@ static struct node * BTree_SearchOddKey(struct node ** root);
 static struct node * BTree_SearchEvenKey(struct node ** root);
 static struct node * BTree_SearchMaxKey(struct node ** root);
 
+int BTree_MinValueInterative(struct node ** root);
+
 #endif
