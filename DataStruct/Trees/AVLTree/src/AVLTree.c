@@ -291,3 +291,15 @@ struct AVL_node* AVLTree_MaxKey(struct AVL_node** root)
 		return LeftNode;
 	return (LeftNode->key > RightNode->key) ? LeftNode : RightNode;
 }
+
+int AVLTree_NumOfLeaves(struct AVL_node** root)
+{
+	if (!(*root)->child[left] && !(*root)->child[right])
+		return 1;
+
+	int QtdLeft = AVLTree_NumOfLeaves(&(*root)->child[left]);
+	int QtdRight = AVLTree_NumOfLeaves(&(*root)->child[right]);
+
+	return QtdLeft + QtdRight;
+}
+

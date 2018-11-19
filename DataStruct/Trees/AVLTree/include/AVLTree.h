@@ -27,5 +27,6 @@ void AVLTree_Destroy(struct AVL_node** root);
 static inline struct AVL_node* AVLTree_NewNode(KEY key);
 int AVLTree_Height(struct AVL_node** root);
 int AVLTree_NumNodes(struct AVL_node ** root);
+int AVLTree_NumOfLeaves(struct AVL_node** root);
 
 #endif
