@@ -745,41 +745,35 @@ int LLRB_HeightIterative(struct LLRB_node** root)
 void LLRB_PrintPathsRootToLeaves(struct LLRB_node** root)
 {
 	struct Queue Q;
-	ruct LLRB_node aux = **root;
 	
-	Q_Init(&Q);	
-	
+	Q_Init(&Q);
+
+	struct LLRB_node aux;
+
 	Q_pushBack(&Q, **root);
-	
-	while(!Q_isEmpty(&Q))
+
+	while (!Q_isEmpty(&Q))
 	{
-		aux = Q_back(&Q);
-		
-		if(aux.child[left])
+
+		aux = Q_popBack(&Q);
+
+		if (aux.child[left])
 		{
 			Q_pushBack(&Q, *aux.child[left]);
 		}
-		else if(aux.child[right])
+		else if (aux.child[right])
 		{
 			Q_pushBack(&Q, *aux.child[right]);
 		}
-		else
+		else 
 		{
-			//ruct LLRB_node aux;
-			
+			int flag = Q_size(&Q);
 			do
 			{
-		
-				if(aux.key == Q_back(&Q).child[left]->key)
-					Q_back(&Q).child[left] = NULL;
-			
-				if(aux.key == Q_back(&Q).child[right]->key)
-					Q_back(&Q).child[right] = NULL;
-				
-				if(!aux.child[left] && !aux.child[right])
-					aux = Q_popBack(&Q);
-			}
-			while(!aux.child[left] && !aux.child[right]);
+				struct LLRB_node aux = Q_back(&Q);
+				Q_pushFront(&Q, Q_popBack(&Q));
+				printf("[%d %s] ", aux.key, (aux.Color) ? "black" : "red");
+			} while (flag);
 		}
 	}
 }

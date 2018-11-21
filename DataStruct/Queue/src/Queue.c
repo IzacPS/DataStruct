@@ -122,3 +122,14 @@ void Q_Destroy(struct Queue* Q)
 	while (Q_popBack(Q));
 	Q->size = 0;
 }
+
+static struct Queue* Q_frontInternal(struct Queue * Q)
+{
+	return Q->head;
+}
+
+static struct Queue* Q_backInternal(struct Queue * Q)
+{
+	return Q->tail;
+}
+
