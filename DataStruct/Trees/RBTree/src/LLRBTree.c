@@ -4,7 +4,7 @@
 #include "../include/LLRBTree.h"
 #define STK_TYPE struct LLRB_node*
 #include "../../../Stack/include/Stack.h"
-#define Q_TYPE struct LLRB_node*
+#define Q_TYPE struct LLRB_node
 #include "../../../Queue/include/Queue.h"
 
 struct LLRB_node** LLRB_Init()
@@ -744,87 +744,42 @@ int LLRB_HeightIterative(struct LLRB_node** root)
 
 void LLRB_PrintPathsRootToLeaves(struct LLRB_node** root)
 {
-	struct LLRB_node** aRoot = LLRB_Init();
-	struct LLRB_node* currentNode;
-	struct LLRB_node* fatherNode = (*root);
-
-	LLRB_CloneTree(root, aRoot);
-
 	struct Queue Q;
-
-	Q_Init(&Q);
-	Q_pushBack(&Q, (*aRoot));
-
-
-	while (!Q_isEmpty(&Q))
+	ruct LLRB_node aux = **root;
+	
+	Q_Init(&Q);	
+	
+	Q_pushBack(&Q, **root);
+	
+	while(!Q_isEmpty(&Q))
 	{
-		currentNode = Q_back(&Q);
-
-
-		if (!currentNode->child[left] && !currentNode->child[right])
+		aux = Q_back(&Q);
+		
+		if(aux.child[left])
 		{
-			struct LLRB_node* flag = Q_front(&Q);
-			struct LLRB_node* an = NULL;
+			Q_pushBack(&Q, *aux.child[left]);
+		}
+		else if(aux.child[right])
+		{
+			Q_pushBack(&Q, *aux.child[right]);
+		}
+		else
+		{
+			//ruct LLRB_node aux;
 			
 			do
 			{
-				an = Q_front(&Q);
-				printf("[%d %s] ", an->key, (an->Color) ? "black" : "red");
-				Q_pushBack(&Q, Q_popFront(&Q));
-			} while (flag != Q_front(&Q));
+		
+				if(aux.key == Q_back(&Q).child[left]->key)
+					Q_back(&Q).child[left] = NULL;
 			
-			printf("\n\n");
-
-			an = Q_back(&Q);
-			Q_popBack(&Q);
-			currentNode = Q_back(&Q);
-
-			if (an == currentNode->child[left]) {
-				free(currentNode->child[left]);
-				currentNode->child[left] = NULL;
+				if(aux.key == Q_back(&Q).child[right]->key)
+					Q_back(&Q).child[right] = NULL;
+				
+				if(!aux.child[left] && !aux.child[right])
+					aux = Q_popBack(&Q);
 			}
-
-			if (an == currentNode->child[right]) {
-				free(currentNode->child[right]);
-				currentNode->child[right] = NULL;
-			}
-
-			if (!currentNode->child[right] && !currentNode->child[right])
-			{
-				Q_popBack(&Q);
-				fatherNode = Q_back(&Q);
-
-				if (fatherNode->child[left] == currentNode)
-					fatherNode->child[left] = NULL;
-				if (fatherNode->child[right] == currentNode)
-					fatherNode->child[right] = NULL;
-
-				free(currentNode);
-				currentNode = NULL;
-
-				if (fatherNode != (*aRoot))
-				{
-					if (!fatherNode->child[left] && !fatherNode->child[left])
-					{
-						free(fatherNode);
-						fatherNode = NULL;
-						Q_popBack(&Q);
-						fatherNode = Q_back(&Q);
-					}
-				}
-			}
-
-			continue;
+			while(!aux.child[left] && !aux.child[right]);
 		}
-
-
-		if (currentNode->child[left] || currentNode->child[right])
-		{
-			if (currentNode->child[left])
-				Q_pushBack(&Q, currentNode->child[left]);
-			else if (currentNode->child[right])
-				Q_pushBack(&Q, currentNode->child[right]);
-		}
-		fatherNode = currentNode;
 	}
 }
