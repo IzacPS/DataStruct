@@ -4,7 +4,7 @@
 #include "../include/LLRBTree.h"
 #define STK_TYPE struct LLRB_node*
 #include "../../../Stack/include/Stack.h"
-#define Q_TYPE struct LLRB_node
+#define Q_TYPE struct LLRB_node*
 #include "../../../Queue/include/Queue.h"
 
 struct LLRB_node** LLRB_Init()
@@ -700,9 +700,9 @@ unsigned char LLRB_IsSearchTree(struct LLRB_node** root)
 }
 
 
-
 int LLRB_HeightIterative(struct LLRB_node** root)
 {
+
 	struct Queue Q;
 	Q_Init(&Q);
 
@@ -742,38 +742,3 @@ int LLRB_HeightIterative(struct LLRB_node** root)
 	}
 }
 
-void LLRB_PrintPathsRootToLeaves(struct LLRB_node** root)
-{
-	struct Queue Q;
-	
-	Q_Init(&Q);
-
-	struct LLRB_node aux;
-
-	Q_pushBack(&Q, **root);
-
-	while (!Q_isEmpty(&Q))
-	{
-
-		aux = Q_popBack(&Q);
-
-		if (aux.child[left])
-		{
-			Q_pushBack(&Q, *aux.child[left]);
-		}
-		else if (aux.child[right])
-		{
-			Q_pushBack(&Q, *aux.child[right]);
-		}
-		else 
-		{
-			int flag = Q_size(&Q);
-			do
-			{
-				struct LLRB_node aux = Q_back(&Q);
-				Q_pushFront(&Q, Q_popBack(&Q));
-				printf("[%d %s] ", aux.key, (aux.Color) ? "black" : "red");
-			} while (flag);
-		}
-	}
-}

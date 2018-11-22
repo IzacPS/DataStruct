@@ -60,7 +60,5 @@ static unsigned char LLRB_areSimilarTreesRecursion(struct LLRB_node ** root1, st
 unsigned char LLRB_areEqualTrees(struct LLRB_node ** root1, struct LLRB_node ** root2);
 static unsigned char LLRB_areEqualTreesRecursion(struct LLRB_node ** root1, struct LLRB_node ** root2);
 TYPE LLRB_MinValueInterative(struct LLRB_node ** root, int index);
-void LLRB_PrintPathsRootToLeaves(struct LLRB_node ** root);
-
 
 #endif
