@@ -1,10 +1,10 @@
 #include <vld.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "Trees/RBTree/include/LLRBTree.h"
-#include "Stack/include/Stack.h"
-//#define Q_TYPE struct LLRB_node*
-#include "Queue/include/Queue.h"
+#include "include/LLRBTree.h"
+#include "include/Stack.h"
+#include "include/Queue.h"
+#include "Test/test.h"
 
 int main()
 {
@@ -24,6 +24,13 @@ int main()
 	//stk_destroy(&stk);
 
 	struct LLRB_node** root1 = LLRB_Init();
+	//struct Queue Q;
+	//struct LLRB_node aux;
+	//aux.Color = 0;
+	//aux.key = 0;
+	//aux.child[left] = NULL;
+	//aux.child[right] = NULL;
+	//Q_Init(&Q);
 	//struct LLRB_node** root2 = LLRB_Init();
 	//int i, N = 10, val[10] ={10,20,30,40,50,15,18,25,38,28};
 //int i, N = 10, val[10] ={10,20,30,40,50,15,18,25,33,28};
@@ -45,6 +52,7 @@ int main()
 		*/
 		//printf("Insercao: %d -> OK\n",val[i]);
 		LLRB_Add(root1, val[i], NORMAL);
+		//Q_pushBack(&Q, **root1);
 		//LLRB_Add(root2, val[i]/*val[(j < M) ? j++ : j]*/, NORMAL);
 		//emOrdem_ArvLLRB(raiz,0);
 		//printf("\n\n==========================\n\n");
@@ -57,16 +65,18 @@ int main()
 	//printf("\n\n");
 	//LLRB_Print(root1, POSTORDER, ITERATIVE);
 	//LLRB_Print(root2, INORDER);
-
-	LLRB_PrintPathsRootToLeaves(root1);
+	//struct Queue *q = &Q;
+	//struct LLRB_node aux2 = q->tail->data;
+	PrintPathsRootToLeaves(*root1);
+	//struct LLRB_node a = **root1;
 
 	LLRB_DestroyTree(root1);
 	//LLRB_DestroyTree(root2);
-
+	//Q_Destroy(&Q);
 	//struct Queue Q;
 
 	//Q_Init(&Q);
-
+	
 	//Q_pushBack(&Q, 1);
 	//Q_pushBack(&Q,3);
 	//Q_pushBack(&Q,4);
@@ -80,7 +90,7 @@ int main()
 	//int an = 0;
 	//do 
 	//{
-	//	an = Q_popBack(&Q);
+	//	an = Q_back(&Q);
 	//	printf("%d ", an);
 	//	Q_pushFront(&Q, an);
 	//} while (flag != an);

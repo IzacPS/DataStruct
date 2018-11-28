@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "../../../Core/DSDefs.h"
+#include "../Core/DSDefs.h"
 #include "../include/AVLTree.h"
 
 struct AVL_node ** AVLTree_Init()

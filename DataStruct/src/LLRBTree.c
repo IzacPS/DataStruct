@@ -2,10 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "../include/LLRBTree.h"
-#define STK_TYPE struct LLRB_node*
-#include "../../../Stack/include/Stack.h"
-#define Q_TYPE struct LLRB_node*
-#include "../../../Queue/include/Queue.h"
+#include "../include/Stack.h"
 
 struct LLRB_node** LLRB_Init()
 {
@@ -367,7 +364,7 @@ static void LLRB_RecursivePrintPosOrdem(struct LLRB_node** root, int h)
 static void LLRB_PrintPreOrdem(struct LLRB_node** root, int h)
 {
 	struct stk stk;
-	stk_Init(&stk);
+	stk_Init(&stk, sizeof(struct LLRB_node*));
 
 	stk_push(&stk, (*root));
 	struct LLRB_node* an;
@@ -406,7 +403,7 @@ void LLRB_CloneTreeRecursion(struct LLRB_node** sourceRoot, struct LLRB_node** d
 static void LLRB_PrintOrdem(struct LLRB_node** root, int h)
 {
 	struct stk stk;
-	stk_Init(&stk);
+	stk_Init(&stk, sizeof(struct LLRB_node*));
 
 	struct LLRB_node* current = (*root);
 	int done = 0;
@@ -436,7 +433,7 @@ static void LLRB_PrintOrdem(struct LLRB_node** root, int h)
 static void LLRB_PrintPosOrdem(struct LLRB_node** root, int h)
 {
 	struct stk stk;
-	stk_Init(&stk);
+	stk_Init(&stk, sizeof(struct LLRB_node*));
 
 	struct LLRB_node* rt = (*root);
 
@@ -489,256 +486,5 @@ int LLRB_Height(struct LLRB_node ** root)
 	return (LeftHeight > RightHeight) ? LeftHeight + Adicional : RightHeight + Adicional;
 }
 
-int LLRB_NumOfNonLeafNodes(struct LLRB_node ** root)
-{
-	if (!(*root)->child[left] && !(*root)->child[right])
-		return 0;
 
-	int LeftHeight = LLRB_NumNodes(&(*root)->child[left]);
-	int RightHeight = LLRB_NumNodes(&(*root)->child[right]);
-
-	return LeftHeight + RightHeight + 1;
-}
-
-void LLRB_MirrorTree(struct LLRB_node** NormalTreeRoot, struct LLRB_node** TreeReverseRoot)
-{
-	if (NormalTreeRoot)
-	{
-		LLRB_MirrorTree(&(*NormalTreeRoot)->child[left], TreeReverseRoot);
-		LLRB_Add(TreeReverseRoot, (*NormalTreeRoot)->key, REVERSE);
-		LLRB_MirrorTree(&(*NormalTreeRoot)->child[right], TreeReverseRoot);
-	}
-}
-
-unsigned char LLRB_areSimilarTrees(struct LLRB_node** root1, struct LLRB_node** root2)
-{
-	assert(root1 || root2);
-
-	if (!*root1 && !*root2)
-		return 1;
-	else
-		return LLRB_areSimilarTreesRecursion(root1, root2);
-}
-
-static unsigned char LLRB_areSimilarTreesRecursion(struct LLRB_node** root1, struct LLRB_node** root2)
-{
-	unsigned char leftResult = 1, rightResult = 1, result = 1;
-
-	if (*root1 && *root2)
-	{
-		leftResult = LLRB_areSimilarTreesRecursion(&(*root1)->child[left], &(*root2)->child[left]);
-		rightResult = LLRB_areSimilarTreesRecursion(&(*root1)->child[right], &(*root2)->child[right]);
-		
-		if ((*root1)->child[left] && (*root2)->child[left] && (*root1)->child[right] && (*root2)->child[right])
-			result = 1 && leftResult && rightResult;
-		else if (!(*root1)->child[left] && !(*root2)->child[left] && (*root1)->child[right] && (*root2)->child[right])
-			result = 1 && leftResult && rightResult;
-		else if ((*root1)->child[left] && (*root2)->child[left] && !(*root1)->child[right] && !(*root2)->child[right])
-			result = 1 && leftResult && rightResult;
-		else if (!(*root1)->child[left] && !(*root2)->child[left] && !(*root1)->child[right] && !(*root2)->child[right])
-			result = 1 && leftResult && rightResult;
-		else
-			result = 0 && leftResult && rightResult;
-
-		printf("result:%d, leftResult:%d, rightResult%d, key%d\n", result, leftResult, rightResult, (*root1)->key);
-	}
-	return result;
-}
-
-unsigned char LLRB_areEqualTrees(struct LLRB_node** root1, struct LLRB_node** root2)
-{
-	assert(root1 || root2);
-
-	if (!*root1 && !*root2)
-		return 1;
-	else
-		return LLRB_areEqualTreesRecursion(root1, root2);
-}
-
-static unsigned char LLRB_areEqualTreesRecursion(struct LLRB_node** root1, struct LLRB_node** root2)
-{
-	unsigned char leftResult = 1, rightResult = 1, result = 1;
-
-	if (*root1 && *root2)
-	{
-		leftResult = LLRB_areEqualTreesRecursion(&(*root1)->child[left], &(*root2)->child[left]);
-		rightResult = LLRB_areEqualTreesRecursion(&(*root1)->child[right], &(*root2)->child[right]);
-
-		if ((*root1)->key == (*root2)->key)
-			result = 1 && leftResult && rightResult;
-		else
-			result = 0 && leftResult && rightResult;
-	}
-	return result;
-}
-
-TYPE LLRB_MinValueInterative(struct LLRB_node** root, int index)
-{
-	struct stk stk;
-	stk_Init(&stk);
-
-	TYPE MinValue = INT_MAX;
-
-	stk_push(&stk, (*root));
-	struct LLRB_node* an;
-
-	int count = 0;
-
-	while (!stk_isEmpty(&stk))
-	{
-		an = stk_pop(&stk);
-
-		if (count == index)
-			return an->key;
-		count++;
-
-		if (an->child[right])
-			stk_push(&stk, an->child[right]);
-		if (an->child[left])
-			stk_push(&stk, an->child[left]);
-	}
-	stk_destroy(&stk);
-
-	return MinValue;
-}
-
-TYPE LLRB_SmallerOrEqual(struct LLRB_node** root, TYPE value)
-{
-	struct stk stk;
-	stk_Init(&stk);
-
-	TYPE MinValue = INT_MAX;
-
-	stk_push(&stk, (*root));
-	struct LLRB_node* an;
-
-	while (!stk_isEmpty(&stk))
-	{
-		an = stk_pop(&stk);
-
-		if (an->key <= value)
-			MinValue = an->key;
-		else
-			return MinValue;
-
-		if (an->child[right])
-			stk_push(&stk, an->child[right]);
-		if (an->child[left])
-			stk_push(&stk, an->child[left]);
-	}
-	stk_destroy(&stk);
-
-	return MinValue;
-}
-
-int LLRB_SearchValueInterative(struct LLRB_node** root, TYPE value)
-{
-	struct stk stk;
-	stk_Init(&stk);
-
-	stk_push(&stk, (*root));
-	struct LLRB_node* an;
-
-	while (!stk_isEmpty(&stk))
-	{
-		an = stk_pop(&stk);
-
-		if (an->key == value)
-			return 1;
-
-		if (an->child[right])
-			stk_push(&stk, an->child[right]);
-		if (an->child[left])
-			stk_push(&stk, an->child[left]);
-	}
-	stk_destroy(&stk);
-
-	return 0;
-}
-
-int LLRB_SearchNegativeValueInterative(struct LLRB_node** root)
-{
-	struct stk stk;
-	stk_Init(&stk);
-
-	stk_push(&stk, (*root));
-	struct LLRB_node* an;
-
-	while (!stk_isEmpty(&stk))
-	{
-		an = stk_pop(&stk);
-
-		if (an->key < 0)
-			return 1;
-
-		if (an->child[right])
-			stk_push(&stk, an->child[right]);
-		if (an->child[left])
-			stk_push(&stk, an->child[left]);
-	}
-	stk_destroy(&stk);
-
-	return 0;
-}
-
-unsigned char LLRB_IsSearchTree(struct LLRB_node** root)
-{
-	assert(root != NULL);
-
-	if (!*root)
-		return 0;
-
-	const unsigned char i = LLRB_IsSearchTree(&(*root)->child[left]) && LLRB_IsSearchTree(&(*root)->child[right]);
-
-	if (!(*root)->child[left] && !(*root)->child[right])
-		return 0;
-
-	if ((*root)->child[left]->key > (*root)->key || (*root)->child[right]->key < (*root)->key)
-		return 0;
-	else
-		return 1 && i;
-}
-
-
-int LLRB_HeightIterative(struct LLRB_node** root)
-{
-
-	struct Queue Q;
-	Q_Init(&Q);
-
-	int Height = 0;
-	int nodeCount = 0;
-	unsigned char flag;
-	const unsigned char one = 1;
-	const unsigned char zero = 0;
-
-	Q_pushBack(&Q, (*root));
-
-
-	while (1)
-	{
-		nodeCount = Q_size(&Q);
-
-		if (nodeCount == 0)
-			return Height;
-		
-		//if (flag)
-		Height++;
-
-		flag = 0;
-
-		while (nodeCount > 0)
-		{
-			struct LLRB_node* an = Q_popBack(&Q);
-
-			//flag |= (an->Color == BLACK) ? one : zero;
-
-			if(an->child[left])
-				Q_pushBack(&Q, an->child[left]);
-			if(an->child[right])
-				Q_pushBack(&Q, an->child[right]);
-			nodeCount--;
-		}
-	}
-}
 

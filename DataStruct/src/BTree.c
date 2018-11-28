@@ -1,10 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-#include "../../../Core/DSDefs.h"
+#include "../Core/DSDefs.h"
 #include "../include/BTree.h"
 #define STK_TYPE struct node*
-#include "../../../Stack/include/Stack.h"
+#include "../include/Stack.h"
 
 struct node** BTree_Init()
 {
@@ -138,19 +138,19 @@ int BTree_IsEmpty(struct node** root)
 	return (!root || !(*root));
 }
 
-struct node* BTree_Search(struct node ** root, int key)
-{
-	if (!root) return NULL;
-
-	if ((*root)->key == key)
-		return (*root);
-	else
-	{
-		//const unsigned char direction = ((*root)->key < key);
-		//return BTree_Search(&((*root)->child[direction]), key);
-	}
-
-}
+//struct node* BTree_Search(struct node ** root, int key)
+//{
+//	if (!root) return NULL;
+//
+//	if ((*root)->key == key)
+//		return (*root);
+//	else
+//	{
+//		//const unsigned char direction = ((*root)->key < key);
+//		//return BTree_Search(&((*root)->child[direction]), key);
+//	}
+//
+//}
 
 void BTree_PrintOrdem(struct node ** root)
 {
@@ -310,7 +310,7 @@ void BTree_SearchKey(struct node** root, enum Parity parity)
 int BTree_MinValueInterative(struct node** root)
 {
 	struct stk stk;
-	stk_Init(&stk);
+	stk_Init(&stk, sizeof(struct LLRB_node*));
 
 	stk_push(&stk, (*root));
 	struct node* an;

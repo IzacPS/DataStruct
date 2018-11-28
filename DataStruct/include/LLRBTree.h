@@ -1,6 +1,6 @@
 #ifndef _BRTREE_H_
 #define _BRTREE_H_
-#include "../../../Core/DSDefs.h"
+#include "../Core/DSDefs.h"
 
 #define TYPE int
 
@@ -55,10 +55,5 @@ static void LLRB_RecursivePrintPosOrdem(struct LLRB_node** root, int h);
 static void LLRB_PrintPosOrdem(struct LLRB_node** root, int h);
 int LLRB_NumNodes(struct LLRB_node** root);
 int LLRB_Height(struct LLRB_node** root);
-unsigned char LLRB_areSimilarTrees(struct LLRB_node ** root1, struct LLRB_node ** root2);
-static unsigned char LLRB_areSimilarTreesRecursion(struct LLRB_node ** root1, struct LLRB_node ** root2);
-unsigned char LLRB_areEqualTrees(struct LLRB_node ** root1, struct LLRB_node ** root2);
-static unsigned char LLRB_areEqualTreesRecursion(struct LLRB_node ** root1, struct LLRB_node ** root2);
-TYPE LLRB_MinValueInterative(struct LLRB_node ** root, int index);
 
 #endif
