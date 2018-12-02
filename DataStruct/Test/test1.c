@@ -104,7 +104,8 @@ int MinValueInterative(struct LLRB_node** root, int index)
 
 	while (!stk_isEmpty(&stk))
 	{
-		an = stk_pop(&stk);
+		an = stk_top(&stk);
+		stk_pop(&stk);
 
 		if (count == index)
 			return an->key;
@@ -132,7 +133,8 @@ int SmallerOrEqual(struct LLRB_node** root, int value)
 
 	while (!stk_isEmpty(&stk))
 	{
-		an = stk_pop(&stk);
+		an = stk_top(&stk);
+		stk_pop(&stk);
 
 		if (an->key <= value)
 			MinValue = an->key;
@@ -159,7 +161,8 @@ int SearchValueInterative(struct LLRB_node** root, int value)
 
 	while (!stk_isEmpty(&stk))
 	{
-		an = stk_pop(&stk);
+		an = stk_top(&stk);
+		stk_pop(&stk);
 
 		if (an->key == value)
 			return 1;
@@ -184,7 +187,8 @@ int SearchNegativeValueInterative(struct LLRB_node** root)
 
 	while (!stk_isEmpty(&stk))
 	{
-		an = stk_pop(&stk);
+		an = stk_top(&stk);
+		stk_pop(&stk);
 
 		if (an->key < 0)
 			return 1;
@@ -246,7 +250,8 @@ int HeightIterative(struct LLRB_node** root)
 
 		while (nodeCount > 0)
 		{
-			struct LLRB_node* an = Q_popBack(&Q);
+			struct LLRB_node* an = Q_back(&Q);
+			Q_popBack(&Q);
 
 			//flag |= (an->Color == BLACK) ? one : zero;
 
@@ -262,7 +267,6 @@ int HeightIterative(struct LLRB_node** root)
 void PrintPathsRootToLeaves(struct LLRB_node* root)
 {
 	struct Queue Q[2];
-	//struct Queue q;
 	struct LLRB_node an;
 	unsigned char q = 0;
 
@@ -273,8 +277,7 @@ void PrintPathsRootToLeaves(struct LLRB_node* root)
 
 	while (!Q_isEmpty(&Q[q]))
 	{
-		an = *(struct LLRB_node*)Q->tail->data;
-		//an = *(struct LLRB_node*)Q_back(&Q[q]);
+		an = *(struct LLRB_node*)Q_back(&Q[q]);
 
 		if (an.child[left])
 		{
@@ -286,28 +289,71 @@ void PrintPathsRootToLeaves(struct LLRB_node* root)
 		}
 		else
 		{
-			an = *(struct LLRB_node*)Q_popBack(&Q[q]);
-			struct LLRB_node a = *(struct LLRB_node*)Q_back(&Q[q]);
+			struct LLRB_node aux;
 
-			if (an.key == a.child[left]->key)
-				a.child[left] = NULL;
-			if (an.key == a.child[right]->key)
-				a.child[right] = NULL;
-
-			if (!a.child[left] && !a.child[right])
+			while (!Q_isEmpty(&Q[q]))
 			{
-				while (!Q_isEmpty(&Q[q]))
-				{
-					Q_pushBack(&Q[!q], Q_back(&Q[q]));
-					struct LLRB_node aux = *(struct LLRB_node*)Q_popBack(&Q[q]);
-					printf("[%d %s] ", aux.key, (aux.Color) ? "black" : "red");
-				}
-				printf("\n");
-				q = !q;
-
+				aux = *(struct LLRB_node*)Q_front(&Q[q]);
+				Q_pushBack(&Q[!q], Q_front(&Q[q]));
 				Q_popFront(&Q[q]);
+
+				printf("[%d %s] ", aux.key, (aux.Color) ? "black" : "red");
 			}
+			printf("\n");
+			q = !q;
+
+			struct LLRB_node* aa;
+			
+			do
+			{
+				an = *(struct LLRB_node*)Q_back(&Q[q]);
+				Q_popBack(&Q[q]);
+				if (Q_isEmpty(&Q[q]))
+					break;
+
+				aa = (struct LLRB_node*)Q_back(&Q[q]);
+
+				if (aa->child[left] && an.key == aa->child[left]->key)
+					aa->child[left] = NULL;
+				if (aa->child[right] && an.key == aa->child[right]->key)
+					aa->child[right] = NULL;
+
+			} while (!aa->child[left] && !aa->child[right]);
+
 		}
 	}
 
+
+}
+
+void PrintAllLevelsTree(struct LLRB_node *root) 
+{
+	
+	struct Queue Q[2];
+	unsigned char s = 0;
+	struct LLRB_node an;
+
+	Q_Init(&Q[s], sizeof(struct LLRB_node));
+	Q_Init(&Q[!s], sizeof(struct LLRB_node));
+
+	Q_pushBack(&Q[s], root);
+
+	while (!Q_isEmpty(&Q[s]))
+	{
+		while (!Q_isEmpty(&Q[s]))
+		{
+			an = *(struct LLRB_node*)Q_front(&Q[s]);
+			Q_popFront(&Q[s]);
+			printf("[%d %s] ", an.key, (an.Color) ? "black" : "red");
+			if (an.child[left])
+				Q_pushBack(&Q[!s], an.child[left]);
+			if (an.child[right])
+				Q_pushBack(&Q[!s], an.child[right]);
+		}
+		printf("\n");
+		s = !s;
+	}
+
+	Q_Destroy(&Q[!s]);
+	
 }

@@ -67,8 +67,11 @@ int main()
 	//LLRB_Print(root2, INORDER);
 	//struct Queue *q = &Q;
 	//struct LLRB_node aux2 = q->tail->data;
+	//NumOfNonLeafNodes(root1);
 	PrintPathsRootToLeaves(*root1);
 	//struct LLRB_node a = **root1;
+	//printf("Numero de nos não folha: %d", NumOfNonLeafNodes(root1));
+	//PrintAllLevelsTree(*root1);
 
 	LLRB_DestroyTree(root1);
 	//LLRB_DestroyTree(root2);

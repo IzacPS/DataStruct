@@ -129,7 +129,6 @@
     <ClCompile Include="src\Queue.c" />
     <ClCompile Include="src\Stack.c" />
     <ClCompile Include="Test\test1.c" />
-    <ClCompile Include="Test\test2.c" />
     <ClCompile Include="src\AVLTree.c" />
     <ClCompile Include="Main.c" />
     <ClCompile Include="src\BTree.c" />

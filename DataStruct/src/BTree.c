@@ -318,7 +318,8 @@ int BTree_MinValueInterative(struct node** root)
 
 	while (!stk_isEmpty(&stk))
 	{
-		an = stk_pop(&stk);
+		an = stk_top(&stk);
+		stk_pop(&stk);
 
 		if (an->key < MinValue)
 			MinValue = an->key;

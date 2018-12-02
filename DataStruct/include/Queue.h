@@ -18,10 +18,11 @@ struct Queue
 
 
 void Q_Init(struct Queue* Q, unsigned int data_size);
+//struct Q_node * Q_NewNode(void * data, unsigned int data_size);
 void Q_pushFront(struct Queue * Q, void* data);
 void Q_pushBack(struct Queue * Q, void* data);
-void* Q_popFront(struct Queue * Q);
-void* Q_popBack(struct Queue * Q);
+void Q_popFront(struct Queue * Q);
+void Q_popBack(struct Queue * Q);
 int Q_size(struct Queue* Q);
 unsigned char Q_isEmpty(struct Queue* Q);
 void* Q_front(struct Queue* Q);

@@ -14,24 +14,26 @@ void stk_Init(struct stk* stk, unsigned int data_size)
 
 }
 
-//struct stk_node* stk_NewNode(void* data)
-//{
-//	struct stk_node* n = malloc(sizeof(struct stk_node));
-//	assert(n);
-//	n->data = malloc();
-//	n->next = NULL;
-//	n->prev = NULL;
-//
-//	return n;
-//}
+static struct stk_node* stk_NewNode(void* data, unsigned int data_size)
+{
+	struct stk_node* n = malloc(sizeof(struct stk_node));
+	assert(n);
+	n->data = malloc(data_size);
+	assert(n->data);
+	memcpy(n->data, data, data_size);
+	n->next = NULL;
+	n->prev = NULL;
+
+	return n;
+}
 
 void stk_push(struct stk* stk, void* data)
 {
-	struct stk_node* an = malloc(stk->data_size);
+	struct stk_node* an = stk_NewNode(data, stk->data_size);
 	assert(an);
 	if (!*(stk->top))
 	{
-		*(stk->top) = memcpy(an, data, stk->data_size);
+		*(stk->top) = an;
 		
 		stk->size++;
 	}
@@ -45,11 +47,10 @@ void stk_push(struct stk* stk, void* data)
 	}
 }
 
-void* stk_pop(struct stk* stk)
+void stk_pop(struct stk* stk)
 {
-	void* ret;
 	if (!*stk->top)
-		return (void*)0;
+		return;
 	else
 	{
 		struct stk_node* an = (*stk->top);
@@ -58,11 +59,10 @@ void* stk_pop(struct stk* stk)
 		if((*stk->top))
 			(*stk->top)->prev = NULL;
 		
-		ret = an->data;
+		free(an->data);
 		free(an);
 	}
 	stk->size--;
-	return ret;
 }
 
 void* stk_top(struct stk* stk)
@@ -80,7 +80,7 @@ unsigned char stk_isEmpty(struct stk* stk)
 
 void stk_destroy(struct stk* stk)
 {
-	if (!stk_isEmpty(stk))
+	if (stk_isEmpty(stk))
 		return;
 
 	while (!stk_isEmpty(stk))

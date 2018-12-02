@@ -371,7 +371,8 @@ static void LLRB_PrintPreOrdem(struct LLRB_node** root, int h)
 
 	while (!stk_isEmpty(&stk))
 	{
-		an = stk_pop(&stk);
+		an = stk_top(&stk);
+		stk_pop(&stk);
 		printf("[%d %s h:%d] ", an->key, (an->Color) ? "black" : "red", h);
 
 		if (an->child[right])
@@ -419,7 +420,8 @@ static void LLRB_PrintOrdem(struct LLRB_node** root, int h)
 		{
 			if (!stk_isEmpty(&stk))
 			{
-				current = stk_pop(&stk);
+				current = stk_top(&stk);
+				stk_pop(&stk);
 				printf("[%d %s h:%d] ", current->key, (current->Color) ? "black" : "red", h);
 				current = current->child[right];
 			}
@@ -446,7 +448,8 @@ static void LLRB_PrintPosOrdem(struct LLRB_node** root, int h)
 			stk_push(&stk, rt);
 			rt = rt->child[left];
 		}
-		rt = stk_pop(&stk);
+		rt = stk_top(&stk);
+		stk_pop(&stk);
 
 		if (rt->child[right] && rt->child[right] == stk_top(&stk)) {
 			stk_pop(&stk);

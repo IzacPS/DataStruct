@@ -44,9 +44,6 @@
     <ClCompile Include="Test\test1.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Test\test2.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Queue.c">
       <Filter>Source Files</Filter>
     </ClCompile>

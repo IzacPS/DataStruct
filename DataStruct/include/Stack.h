@@ -17,7 +17,7 @@ struct stk
 
 void stk_Init(struct stk* stk, unsigned int data_size);
 void stk_push(struct stk* stk, void* data);
-void* stk_pop(struct stk* stk);
+void stk_pop(struct stk* stk);
 void* stk_top(struct stk* stk);
 unsigned char stk_isEmpty(struct stk * stk);
 void stk_destroy(struct stk* stk);
